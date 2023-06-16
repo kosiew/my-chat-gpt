@@ -62,7 +62,7 @@ export function ChatInput({
     const el = event.currentTarget;
 
     el.style.height = "auto";
-    el.style.height = `${el.scrollHeight}px`;
+    el.style.height = `${el.scrollHeight + 20}px`;
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -70,7 +70,16 @@ export function ChatInput({
       return;
     }
 
+    console.log(
+      "%c👀  ==> [handleKeyDown] 👀",
+      "background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;",
+      { sendWithShiftEnter, shiftKey: e.shiftKey, key: e.key }
+    );
     if (e.shiftKey && !sendWithShiftEnter) {
+      console.log(
+        "%c==> [handleKeyDown in shift Enter]",
+        "background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;"
+      );
       e.preventDefault();
       const textarea = e.target as HTMLTextAreaElement;
       const start = textarea.selectionStart;

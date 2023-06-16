@@ -74,6 +74,11 @@ export function SettingsPage() {
     const apiKeyForm = formData.get("apiKey");
     const shiftSendForm = formData.get("shiftSend");
     const showPreambleMessageForm = formData.get("preamble-message");
+    const modelForm = formData.get("model");
+    console.log(
+      `%c==> [Settings.save modelForm: ${modelForm} ]`,
+      "background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;"
+    );
 
     if (preambleForm) {
       dispatch(setPreamble({ preamble: preambleForm.toString() }));
