@@ -28,7 +28,9 @@ export function ChatView({ chat }: ChatViewProps) {
 
   // Create a simple tune
   const tune: Note[] = [
-    { frequency: 523.25, duration: 0.8 }, // C5
+    { frequency: 1000, duration: 0.1 },
+    { frequency: 1500, duration: 0.1 },
+    { frequency: 2000, duration: 0.1 },
   ];
 
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -201,7 +203,7 @@ export function ChatView({ chat }: ChatViewProps) {
           )}
         </div>
       </div>
-      <div className="sticky bottom-0 mt-auto w-full bg-mirage-800 px-4">
+      <div className="sticky bottom-0 mt-auto w-full bg-mirage-800 ">
         <ChatInput
           draft={chat.draft}
           disabled={botTyping}
