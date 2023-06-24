@@ -1,5 +1,4 @@
 import { useAppDispatch, useAppSelector } from "@src/lib/hooks/redux";
-import * as Clipboard from "clipboard";
 
 import { ChatCompletionResponseMessageRoleEnum } from "openai";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -31,11 +30,6 @@ export function ChatView({ chat }: ChatViewProps) {
   const tune: Note[] = [
     { frequency: 523.25, duration: 0.8 }, // C5
   ];
-
-  const copyTextToClipboard = useCallback((text: string) => {
-    const clipboard = new Clipboard();
-    clipboard.writeText(text);
-  }, []);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const isScrolledToBottomRef = useRef(true);
@@ -70,7 +64,7 @@ export function ChatView({ chat }: ChatViewProps) {
   const handleChatSubmit = useCallback<NonNullable<ChatInputProps["onSubmit"]>>(
     ({ draft, role }) => {
       if (!chat) return;
-      copyTextToClipboard(draft);
+
       dispatch(pushHistory({ content: draft, role: role }));
       dispatch(updateDraft({ id: chat.id, draft: "" }));
       playTune(shortTune);
