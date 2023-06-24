@@ -6,13 +6,17 @@ import {
   switchChat,
 } from "@src/features/chat";
 import { useAppDispatch, useAppSelector } from "@src/lib/hooks/redux";
+import { differenceInDays } from "date-fns";
+
 import classNames from "classnames";
 import { IconButton } from "./IconButton";
 import { FiCheck, FiEdit, FiTrash } from "react-icons/fi";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { localConfirm } from "@src/lib/util";
+import { parseChatIdToDate } from "@src/utils/date";
 
 const SUMMARY_TYPING_SPEED = 50;
+const OLD_DAYS_THRESHOLD = 30;
 interface ChatSummaryTextProps {
   summary: string;
 }
@@ -186,6 +190,28 @@ export function ChatSelection() {
     (await localConfirm("Are you sure you want to delete all chats?")) &&
       dispatch(clearChats());
   };
+
+  const checkAndAlertOldChats = useCallback(() => {
+    const currentDate = new Date();
+    const oldChats = Object.entries(chats).filter(([id]) => {
+      const chatDate = parseChatIdToDate(id);
+      const daysDifference = differenceInDays(currentDate, chatDate);
+      return daysDifference > OLD_DAYS_THRESHOLD;
+    });
+
+    if (oldChats.length) {
+      const command = `files=$(find /Users/kosiew/Library/Application\\ Support/my-chat-gpt/chats -type f -mtime +${OLD_DAYS_THRESHOLD} -print); if [[ -n $files ]]; then echo \"$files\" | xargs rm -v; else echo \"No files older than ${OLD_DAYS_THRESHOLD} days found.\"; fi`;
+      navigator.clipboard.writeText(command);
+
+      alert(
+        `There are ${oldChats.length} chats older than ${OLD_DAYS_THRESHOLD} days. The command to delete these files has been copied to your clipboard.`
+      );
+    }
+  }, [chats]);
+
+  useEffect(() => {
+    checkAndAlertOldChats();
+  }, [chats]);
 
   const sortedChats = Object.entries(chats).sort(
     ([idA], [idB]) => Number(idB) - Number(idA)
