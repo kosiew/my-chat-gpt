@@ -28,8 +28,6 @@ export function ChatView({ chat }: ChatViewProps) {
 
   // Create a simple tune
   const tune: Note[] = [
-    { frequency: 440, duration: 0.4 }, // A4
-    { frequency: 493.88, duration: 0.4 }, // B4
     { frequency: 523.25, duration: 0.8 }, // C5
   ];
 
