@@ -156,38 +156,40 @@ export function ChatView({ chat }: ChatViewProps) {
   }, [chat.history, chat.id, dispatch, showPreamble]);
 
   return (
-    <div className="h-full overflow-y-scroll" ref={scrollRef}>
-      <div className="mx-auto flex min-h-full max-w-screen-md flex-col px-4">
-        <div className="py-5">
-          {historyMessages}
+    <div className="flex h-full flex-col overflow-hidden">
+      <div className="flex-1 overflow-y-scroll" ref={scrollRef}>
+        <div className="mx-auto max-w-screen-md px-4 py-5">
+          <div id="chat">
+            {historyMessages}
+            {shouldRenderTmpMessage && (
+              <ChatMessage
+                content={botTypingMessage.content!}
+                role={botTypingMessage.role!}
+              />
+            )}
+          </div>
           {shouldRenderTmpMessage && (
-            <ChatMessage
-              content={botTypingMessage.content!}
-              role={botTypingMessage.role!}
-            />
+            <div className="flex justify-center">
+              <Button onClick={handleChatAbort}>Stop Generation</Button>
+            </div>
+          )}
+          {!botTyping && !isHistoryEmpty && (
+            <div className="flex justify-center">
+              <Button onClick={handleGenerateResponse}>
+                {isLastMessageBot ? "Regenerate Response" : "Generate Response"}
+              </Button>
+            </div>
           )}
         </div>
-        {shouldRenderTmpMessage && (
-          <div className="flex justify-center">
-            <Button onClick={handleChatAbort}>Stop Generation</Button>
-          </div>
-        )}
-        {!botTyping && !isHistoryEmpty && (
-          <div className="flex justify-center">
-            <Button onClick={handleGenerateResponse}>
-              {isLastMessageBot ? "Regenerate Response" : "Generate Response"}
-            </Button>
-          </div>
-        )}
-        <div className="sticky bottom-4 mt-auto w-full">
-          <ChatInput
-            draft={chat.draft}
-            disabled={botTyping}
-            sendAsRole={sendAsRole}
-            onChange={handleChatInput}
-            onSubmit={handleChatSubmit}
-          />
-        </div>
+      </div>
+      <div className="sticky bottom-0 mt-auto w-full bg-mirage-800">
+        <ChatInput
+          draft={chat.draft}
+          disabled={botTyping}
+          sendAsRole={sendAsRole}
+          onChange={handleChatInput}
+          onSubmit={handleChatSubmit}
+        />
       </div>
     </div>
   );
