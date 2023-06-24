@@ -64,7 +64,11 @@ export function ChatView({ chat }: ChatViewProps) {
   const handleChatSubmit = useCallback<NonNullable<ChatInputProps["onSubmit"]>>(
     ({ draft, role }) => {
       if (!chat) return;
-
+      console.log(
+        "%c👀  ==> [handleChatSubmit] 👀",
+        "background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;",
+        { draft }
+      );
       dispatch(pushHistory({ content: draft, role: role }));
       dispatch(updateDraft({ id: chat.id, draft: "" }));
       playTune(shortTune);
