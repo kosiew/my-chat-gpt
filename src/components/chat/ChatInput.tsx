@@ -15,6 +15,7 @@ export type ChatInputProps = {
   disabled?: boolean;
   draft?: string;
   sendAsRole: ChatCompletionResponseMessageRoleEnum;
+  onArrowInput?: (index: number) => void;
 };
 
 export function ChatInput({
@@ -23,6 +24,7 @@ export function ChatInput({
   sendAsRole,
   onSubmit,
   disabled,
+  onArrowInput,
 }: ChatInputProps) {
   const sendWithShiftEnter = useAppSelector(
     (state) => state.settings.shiftSend
@@ -66,15 +68,13 @@ export function ChatInput({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key !== "Enter") {
+    if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+      onArrowInput?.(e.key === "ArrowUp" ? 1 : -1);
+      e.preventDefault();
+    } else if (e.key !== "Enter") {
       return;
     }
 
-    console.log(
-      "%c👀  ==> [handleKeyDown] 👀",
-      "background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;",
-      { sendWithShiftEnter, shiftKey: e.shiftKey, key: e.key }
-    );
     if (e.shiftKey && !sendWithShiftEnter) {
       console.log(
         "%c==> [handleKeyDown in shift Enter]",

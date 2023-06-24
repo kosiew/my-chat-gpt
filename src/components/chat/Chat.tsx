@@ -93,6 +93,26 @@ export function ChatView({ chat }: ChatViewProps) {
     scrollElement.scrollTop = scrollElement.scrollHeight;
   };
 
+  const [inputHistory, setInputHistory] = useState<string[]>([]);
+  const [inputHistoryIndex, setInputHistoryIndex] = useState(0);
+
+  // New function to handle arrow input in ChatInput
+  const handleArrowInput = (direction: number) => {
+    const newIndex = inputHistoryIndex + direction;
+    if (newIndex >= 0 && newIndex < inputHistory.length) {
+      setInputHistoryIndex(newIndex);
+      dispatch(updateDraft({ id: chat.id, draft: inputHistory[newIndex] }));
+    }
+  };
+
+  // Update inputHistory after submitting the message
+  useEffect(() => {
+    if (chat.draft === "" && chat.draft !== "") {
+      setInputHistory((prevInputHistory) => [chat.draft, ...prevInputHistory]);
+      setInputHistoryIndex(0);
+    }
+  }, [chat]);
+
   useEffect(() => {
     const scrollElement = scrollRef.current;
 
@@ -201,6 +221,7 @@ export function ChatView({ chat }: ChatViewProps) {
           sendAsRole={sendAsRole}
           onChange={handleChatInput}
           onSubmit={handleChatSubmit}
+          onArrowInput={handleArrowInput}
         />
       </div>
     </div>
