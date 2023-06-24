@@ -5,6 +5,7 @@ import { PartialChatCompletionChunk } from "@src/lib/api/openai";
 import { Chat, ChatState, NEW_CHAT_DEFAULT, SYSTEM } from "./types";
 import { fetchSummary, streamCompletion } from "./thunks";
 import { getStorage } from "@src/lib/storage";
+import { getHumanReadableTimestamp } from "@src/utils/date";
 
 export const saveChatFile = (chat: Chat) => {
   getStorage()
@@ -38,7 +39,7 @@ export const chatsSlice = createSlice({
     },
     createChat: (state, payload: PayloadAction<{ preamble: string }>) => {
       const messageId = uuid();
-      const id = uuid();
+      const id = getHumanReadableTimestamp();
       state.chats[id] = {
         id,
         summary: NEW_CHAT_DEFAULT,
