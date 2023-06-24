@@ -1,4 +1,5 @@
 import { useAppDispatch, useAppSelector } from "@src/lib/hooks/redux";
+import { differenceInDays } from "date-fns";
 
 import { ChatCompletionResponseMessageRoleEnum } from "openai";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -99,6 +100,29 @@ export function ChatView({ chat }: ChatViewProps) {
 
     scrollElement.scrollTop = scrollElement.scrollHeight;
   };
+
+  const checkAndAlertOldChats = useCallback(() => {
+    const currentDate = new Date();
+    const oldChats = Object.entries(chats).filter(([id]) => {
+      const chatDate = new Date(parseInt(id, 10));
+      const daysDifference = differenceInDays(currentDate, chatDate);
+      return daysDifference > 3;
+    });
+
+    if (oldChats.length) {
+      const command =
+        'files=$(find /Users/kosiew/Library/Application\\ Support/my-chat-gpt/chats -type f -mtime +30 -print); if [[ -n $files ]]; then echo "$files" | xargs rm -v; else echo "No files older than 30 days found."; fi';
+      navigator.clipboard.writeText(command);
+
+      alert(
+        `There are ${oldChats.length} chats older than 30 days. The command to delete these files has been copied to your clipboard.`
+      );
+    }
+  }, [chats]);
+
+  useEffect(() => {
+    checkAndAlertOldChats();
+  }, [checkAndAlertOldChats]);
 
   useEffect(() => {
     const scrollElement = scrollRef.current;
