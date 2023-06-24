@@ -1,7 +1,7 @@
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { ChatSelection } from "./components/ChatSelection";
 import { useAppDispatch, useAppSelector } from "./lib/hooks/redux";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FiSettings, FiX, FiMenu } from "react-icons/fi";
 import classNames from "classnames";
 import { IconButton } from "./components/IconButton";
@@ -9,6 +9,20 @@ import { createChat, switchChat } from "./features/chat";
 
 function SideMenu() {
   const [isOpen, setIsOpen] = useState(false);
+
+  const sideMenuRef = useRef(null);
+  const handleClickOutside = (event) => {
+    if (sideMenuRef.current && !sideMenuRef.current.contains(event.target)) {
+      setIsOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const classes = classNames(
     {
@@ -29,7 +43,7 @@ function SideMenu() {
           {isOpen ? <FiX size={20} /> : <FiMenu size={20} />}
         </IconButton>
       </div>
-      <aside className={classes}>
+      <aside ref={sideMenuRef} className={classes}>
         <div className="flex h-full flex-col px-2 pt-14">
           <div className="flex-1 basis-full overflow-y-auto">
             <ChatSelection />
