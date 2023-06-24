@@ -14,6 +14,7 @@ import {
 import { pushHistory, streamCompletion } from "@src/features/chat/thunks";
 import { Chat } from "@src/features/chat/types";
 import { Button } from "../Button";
+import { playTune } from "@src/utils/audio";
 
 export type ChatViewProps = {
   chat: Chat;
@@ -24,6 +25,13 @@ export function ChatView({ chat }: ChatViewProps) {
 
   const [sendAsRole, setSendAsRole] =
     useState<ChatCompletionResponseMessageRoleEnum>("user");
+
+  // Create a simple tune
+  const tune: Note[] = [
+    { frequency: 440, duration: 0.4 }, // A4
+    { frequency: 493.88, duration: 0.4 }, // B4
+    { frequency: 523.25, duration: 0.8 }, // C5
+  ];
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const isScrolledToBottomRef = useRef(true);
@@ -61,6 +69,7 @@ export function ChatView({ chat }: ChatViewProps) {
 
       dispatch(pushHistory({ content: draft, role: role }));
       dispatch(updateDraft({ id: chat.id, draft: "" }));
+      playTune(tune);
     },
     [chat, dispatch]
   );
