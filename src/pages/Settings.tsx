@@ -124,7 +124,7 @@ export function SettingsPage() {
             navigate("/");
           }}
           aria-label="Go Back"
-          className="right-full top-0 mb-2 md:absolute md:ml-0 md:mr-4 "
+          className="sticky right-full top-0 mb-2 md:absolute md:ml-0 md:mr-4"
         >
           <FiChevronLeft size={20} />
         </IconButton>
