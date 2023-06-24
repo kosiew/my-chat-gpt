@@ -201,7 +201,7 @@ export function ChatView({ chat }: ChatViewProps) {
           )}
         </div>
       </div>
-      <div className="sticky bottom-0 mt-auto w-full bg-mirage-800">
+      <div className="sticky bottom-0 mt-auto w-full bg-mirage-800 px-4">
         <ChatInput
           draft={chat.draft}
           disabled={botTyping}

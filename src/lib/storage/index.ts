@@ -77,9 +77,5 @@ export function getStorage(): Storage {
     result = new LocalStorage();
     storageType = "LocalStorage";
   }
-  console.log(
-    `%c==> [getStorage - ${storageType} ]`,
-    "background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;"
-  );
   return result;
 }
