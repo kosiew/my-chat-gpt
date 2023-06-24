@@ -15,6 +15,7 @@ import { pushHistory, streamCompletion } from "@src/features/chat/thunks";
 import { Chat } from "@src/features/chat/types";
 import { Button } from "../Button";
 import { playTune, shortTune } from "@src/utils/audio";
+import { is } from "date-fns/locale";
 
 export type ChatViewProps = {
   chat: Chat;
@@ -27,10 +28,16 @@ export function ChatView({ chat }: ChatViewProps) {
     useState<ChatCompletionResponseMessageRoleEnum>("user");
 
   // Create a simple tune
-  const tune: Note[] = [
+  const onSubmitTune: Note[] = [
     { frequency: 1000, duration: 0.1 },
     { frequency: 1500, duration: 0.1 },
     { frequency: 2000, duration: 0.1 },
+  ];
+
+  const onCompletionTune: Note[] = [
+    { frequency: 2000, duration: 0.1 },
+    { frequency: 1500, duration: 0.1 },
+    { frequency: 1000, duration: 0.1 },
   ];
 
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -69,7 +76,7 @@ export function ChatView({ chat }: ChatViewProps) {
       navigator.clipboard.writeText(draft);
       dispatch(pushHistory({ content: draft, role: role }));
       dispatch(updateDraft({ id: chat.id, draft: "" }));
-      playTune(tune);
+      playTune(onSubmitTune);
     },
     [chat, dispatch]
   );
@@ -82,17 +89,21 @@ export function ChatView({ chat }: ChatViewProps) {
   const handleGenerateResponse = useCallback(() => {
     if (!chat) return;
 
+    const done = () => {
+      dispatch(streamCompletion(chat.id));
+    };
+
     if (isLastMessageBot) {
       // Remove the last message by the bot and generate a new one
       const lastMessage = Object.values(chat.history).pop();
       if (lastMessage) {
         dispatch(deleteMessage({ chatId: chat.id, messageId: lastMessage.id }));
       }
-      dispatch(streamCompletion(chat.id));
+      done();
       return;
     }
 
-    dispatch(streamCompletion(chat.id));
+    done();
   }, [chat, dispatch, isLastMessageBot]);
 
   const scrollToBottom = () => {
@@ -170,6 +181,14 @@ export function ChatView({ chat }: ChatViewProps) {
       );
     });
   }, [chat.history, chat.id, dispatch, showPreamble]);
+
+  const completedResponse = !botTyping && !isHistoryEmpty && isLastMessageBot;
+
+  useEffect(() => {
+    if (completedResponse) {
+      playTune(onCompletionTune);
+    }
+  }, [completedResponse]);
 
   // Scroll to the bottom whenever historyMessages changes
   useEffect(() => {
