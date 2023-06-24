@@ -14,10 +14,6 @@ class LocalStorage extends Storage {
 
   storeChat(chat: Chat): Promise<void> {
     const itemKey = `${this.CHATS_KEY_PREFIX}${chat.id}`;
-    console.log(
-      `%c==> [storeChat itemKey: ${itemKey}]`,
-      "background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;"
-    );
     window.localStorage.setItem(
       `${this.CHATS_KEY_PREFIX}${chat.id}`,
       JSON.stringify(chat)
@@ -37,10 +33,6 @@ class LocalStorage extends Storage {
   }
   deleteChat(id: string): Promise<void> {
     const itemKey = `${this.CHATS_KEY_PREFIX}${id}`;
-    console.log(
-      `%c==> [deleteChat itemKey: ${itemKey} ]`,
-      "background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;"
-    );
     window.localStorage.removeItem(itemKey);
     return Promise.resolve();
   }
@@ -76,9 +68,18 @@ class ElectronStorage extends Storage {
 }
 
 export function getStorage(): Storage {
+  let result;
+  let storageType;
   if (window.electronAPI) {
-    return new ElectronStorage();
+    result = new ElectronStorage();
+    storageType = "ElectronStorage";
   } else {
-    return new LocalStorage();
+    result = new LocalStorage();
+    storageType = "LocalStorage";
   }
+  console.log(
+    `%c==> [getStorage - ${storageType} ]`,
+    "background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;"
+  );
+  return result;
 }

@@ -49,7 +49,8 @@ const getInitalState = async (): Promise<RootState | undefined> => {
       localState = JSON.parse(localStateJson);
     }
 
-    const chats: Chat[] = await getStorage().getChats();
+    const storage = getStorage();
+    const chats: Chat[] = await storage.getChats();
     const chatRecord = chats.reduce<Record<string, Chat>>((acc, chat) => {
       const parse = chatSchema.safeParse(chat);
       if (parse.success) {
