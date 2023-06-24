@@ -14,7 +14,7 @@ import {
 import { pushHistory, streamCompletion } from "@src/features/chat/thunks";
 import { Chat } from "@src/features/chat/types";
 import { Button } from "../Button";
-import { playTune } from "@src/utils/audio";
+import { playTune, shortTune } from "@src/utils/audio";
 
 export type ChatViewProps = {
   chat: Chat;
@@ -67,7 +67,7 @@ export function ChatView({ chat }: ChatViewProps) {
 
       dispatch(pushHistory({ content: draft, role: role }));
       dispatch(updateDraft({ id: chat.id, draft: "" }));
-      playTune(tune);
+      playTune(shortTune);
     },
     [chat, dispatch]
   );
