@@ -187,6 +187,10 @@ export function ChatSelection() {
       dispatch(clearChats());
   };
 
+  const sortedChats = Object.entries(chats).sort(
+    ([idA], [idB]) => Number(idB) - Number(idA)
+  );
+
   return (
     <div className="sticky top-0 flex flex-col">
       <div className="border-b-2 border-mirage-700">
@@ -204,21 +208,19 @@ export function ChatSelection() {
         />
       </div>
       <div className="border-b-2 border-mirage-700">
-        {Object.entries(chats)
-          .sort(([idA], [idB]) => Number(idB) - Number(idA))
-          .map(([id, chat]) => {
-            return (
-              <ChatSelectionButton
-                summary={chat.summary}
-                active={id === activeChatId}
-                id={id}
-                onClick={handleSwitchChat}
-                onDelete={handleDeleteChat}
-                onEdit={handleEditChat}
-                key={id}
-              />
-            );
-          })}
+        {sortedChats.map(([id, chat]) => {
+          return (
+            <ChatSelectionButton
+              summary={chat.summary}
+              active={id === activeChatId}
+              id={id}
+              onClick={handleSwitchChat}
+              onDelete={handleDeleteChat}
+              onEdit={handleEditChat}
+              key={id}
+            />
+          );
+        })}
       </div>
     </div>
   );
