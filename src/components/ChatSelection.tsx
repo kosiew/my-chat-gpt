@@ -207,10 +207,6 @@ export function ChatSelection() {
         {Object.entries(chats)
           .sort(([idA], [idB]) => Number(idB) - Number(idA))
           .map(([id, chat]) => {
-            console.log(
-              `%c==> [ChatSelection id: ${id} ]`,
-              "background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;"
-            );
             return (
               <ChatSelectionButton
                 summary={chat.summary}
