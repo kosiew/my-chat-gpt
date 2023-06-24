@@ -86,6 +86,13 @@ export function ChatView({ chat }: ChatViewProps) {
     dispatch(streamCompletion(chat.id));
   }, [chat, dispatch, isLastMessageBot]);
 
+  const scrollToBottom = () => {
+    const scrollElement = scrollRef.current;
+    if (!scrollElement) return;
+
+    scrollElement.scrollTop = scrollElement.scrollHeight;
+  };
+
   useEffect(() => {
     const scrollElement = scrollRef.current;
 
@@ -154,6 +161,11 @@ export function ChatView({ chat }: ChatViewProps) {
       );
     });
   }, [chat.history, chat.id, dispatch, showPreamble]);
+
+  // Scroll to the bottom whenever historyMessages changes
+  useEffect(() => {
+    scrollToBottom();
+  }, [historyMessages]);
 
   return (
     <div className="flex h-full flex-col overflow-hidden">
