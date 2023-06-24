@@ -204,19 +204,25 @@ export function ChatSelection() {
         />
       </div>
       <div className="border-b-2 border-mirage-700">
-        {Object.entries(chats).map(([id, chat]) => {
-          return (
-            <ChatSelectionButton
-              summary={chat.summary}
-              active={id === activeChatId}
-              id={id}
-              onClick={handleSwitchChat}
-              onDelete={handleDeleteChat}
-              onEdit={handleEditChat}
-              key={id}
-            />
-          );
-        })}
+        {Object.entries(chats)
+          .sort(([idA], [idB]) => Number(idB) - Number(idA))
+          .map(([id, chat]) => {
+            console.log(
+              `%c==> [ChatSelection id: ${id} ]`,
+              "background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;"
+            );
+            return (
+              <ChatSelectionButton
+                summary={chat.summary}
+                active={id === activeChatId}
+                id={id}
+                onClick={handleSwitchChat}
+                onDelete={handleDeleteChat}
+                onEdit={handleEditChat}
+                key={id}
+              />
+            );
+          })}
       </div>
     </div>
   );

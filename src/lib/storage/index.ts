@@ -13,6 +13,11 @@ class LocalStorage extends Storage {
   CHATS_KEY_PREFIX = "chat_";
 
   storeChat(chat: Chat): Promise<void> {
+    const itemKey = `${this.CHATS_KEY_PREFIX}${chat.id}`;
+    console.log(
+      `%c==> [storeChat itemKey: ${itemKey}]`,
+      "background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;"
+    );
     window.localStorage.setItem(
       `${this.CHATS_KEY_PREFIX}${chat.id}`,
       JSON.stringify(chat)
@@ -31,7 +36,12 @@ class LocalStorage extends Storage {
     return Promise.resolve(chats);
   }
   deleteChat(id: string): Promise<void> {
-    window.localStorage.removeItem(`${this.CHATS_KEY_PREFIX}${id}`);
+    const itemKey = `${this.CHATS_KEY_PREFIX}${id}`;
+    console.log(
+      `%c==> [deleteChat itemKey: ${itemKey} ]`,
+      "background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;"
+    );
+    window.localStorage.removeItem(itemKey);
     return Promise.resolve();
   }
   getApiKey(): Promise<string | null> {
