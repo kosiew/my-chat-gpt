@@ -14,6 +14,7 @@ import { FiCheck, FiEdit, FiTrash } from "react-icons/fi";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { localConfirm } from "@src/lib/util";
 import { parseChatIdToDate } from "@src/utils/date";
+import { setOpen } from "@src/features/sideMenu";
 
 const SUMMARY_TYPING_SPEED = 50;
 const OLD_DAYS_THRESHOLD = 30;
@@ -174,6 +175,7 @@ export function ChatSelection() {
 
   const handleCreateChat = () => {
     dispatch(createChat({ preamble }));
+    dispatch(setOpen(false));
   };
   const handleSwitchChat = (id: string) => {
     dispatch(switchChat({ id }));
