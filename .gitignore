@@ -27,3 +27,4 @@ chats
 *.sw?
 
 .eslintcache
+tsconfig.tsbuildinfo
