@@ -12,6 +12,7 @@ import {
 } from "react-icons/fi";
 import { capitilize } from "@src/lib/util";
 import classNames from "classnames";
+import { useToast } from "@src/lib/hooks/toast";
 
 export type ChatMessageProps = {
   content: string;
@@ -33,6 +34,7 @@ export function ChatMessage({
   const [isCopied, setIsCopied] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(content);
+  const { addToast } = useToast();
 
   const nameClasses = classNames(
     {
@@ -101,6 +103,7 @@ export function ChatMessage({
           onClick={() => {
             setIsCopied(true);
             navigator.clipboard.writeText(content);
+            addToast("Copied");
           }}
           onMouseLeave={() => {
             setIsCopied(false);
