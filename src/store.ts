@@ -66,7 +66,7 @@ const getInitalState = async (): Promise<RootState | undefined> => {
     const result: RootState = {
       chats: {
         chats: chatRecord,
-        activeId: chats.length > 0 ? chats[0].id : null,
+        activeId: chats.length > 0 ? chats[chats.length - 1].id : null,
       },
       toasts: {
         toasts: {},
