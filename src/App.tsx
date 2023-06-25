@@ -6,9 +6,16 @@ import { FiSettings, FiX, FiMenu } from "react-icons/fi";
 import classNames from "classnames";
 import { IconButton } from "./components/IconButton";
 import { createChat, switchChat } from "./features/chat";
+import { setOpen } from "@src/features/sideMenu";
+import { selectIsOpen } from "@src/features/sideMenu/selectors";
 
 function SideMenu() {
-  const [isOpen, setIsOpen] = useState(false);
+  const isOpen = useAppSelector(selectIsOpen);
+  const dispatch = useAppDispatch();
+
+  const toggleSideMenu = () => {
+    dispatch(setOpen(!isOpen));
+  };
 
   const sideMenuRef = useRef(null);
   const handleClickOutside = (event: MouseEvent) => {
@@ -16,7 +23,7 @@ function SideMenu() {
       sideMenuRef.current &&
       !(sideMenuRef.current as HTMLDivElement).contains(event.target as Node)
     ) {
-      setIsOpen(false);
+      dispatch(setOpen(false));
     }
   };
 
@@ -39,7 +46,7 @@ function SideMenu() {
     <>
       <div className="fixed top-0 left-0 z-50 p-2">
         <IconButton
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={toggleSideMenu}
           className=" p-2"
           aria-label={`${isOpen ? "Close" : "Open"} side menu`}
         >
