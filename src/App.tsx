@@ -70,12 +70,17 @@ function App() {
 
   useEffect(() => {
     if (!state.chats.activeId) {
-      const firstChat = Object.values(state.chats.chats)[0];
-
-      if (!firstChat) {
+      const chatsArray = Object.values(state.chats.chats);
+      console.log(
+        "%c👀  ==> [App] 👀",
+        "background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;",
+        { chatsArray }
+      );
+      const lastChat = chatsArray.slice(-1)[0];
+      if (!lastChat) {
         dispatch(createChat({ preamble: state.settings.preamble }));
       } else {
-        dispatch(switchChat({ id: firstChat.id }));
+        dispatch(switchChat({ id: lastChat.id }));
       }
       return;
     }
