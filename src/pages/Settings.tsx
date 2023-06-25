@@ -10,6 +10,7 @@ import {
   setPreamble,
   setShiftKey,
   setShowPreamble,
+  setMuteSound,
 } from "@src/features/settings";
 import { createToast } from "@src/features/toasts/thunks";
 import { CHATGPT_MODELS, ChatGPTModel } from "@src/lib/constants/openai";
@@ -59,6 +60,7 @@ export function SettingsPage() {
   const preamble = useAppSelector((state) => state.settings.preamble);
   const apiKey = useAppSelector((state) => state.settings.apiKey);
   const shiftSend = useAppSelector((state) => state.settings.shiftSend);
+  const muteSound = useAppSelector((state) => state.settings.muteSound);
   const showPreambleMessage = useAppSelector(
     (state) => state.settings.showPreamble
   );
@@ -73,6 +75,7 @@ export function SettingsPage() {
     const preambleForm = formData.get("preamble");
     const apiKeyForm = formData.get("apiKey");
     const shiftSendForm = formData.get("shiftSend");
+    const muteSoundForm = formData.get("muteSound");
     const showPreambleMessageForm = formData.get("preamble-message");
     const modelForm = formData.get("model");
 
@@ -90,6 +93,12 @@ export function SettingsPage() {
     );
 
     dispatch(
+      setMuteSound({
+        muteSound: muteSoundForm?.toString() === "on" ? true : false,
+      })
+    );
+
+    dispatch(
       setShowPreamble({
         show: showPreambleMessageForm?.toString() === "on" ? true : false,
       })
@@ -98,7 +107,7 @@ export function SettingsPage() {
     dispatch(
       setModel({
         model:
-          (formData.get("model")?.toString() as ChatGPTModel) ??
+          (modelForm?.toString() as ChatGPTModel) ??
           Object.values(CHATGPT_MODELS)[0],
       })
     );
@@ -183,6 +192,18 @@ export function SettingsPage() {
               type="checkbox"
               name="shiftSend"
               id="shiftSend"
+            />
+          </div>
+        </SettingItem>
+        <SettingItem>
+          <div className="flex flex-row items-center">
+            <label htmlFor="muteSound">Mute sound</label>
+            <input
+              defaultChecked={muteSound}
+              className="ml-2 rounded-md bg-mirage-700 transition-all checked:accent-green-700"
+              type="checkbox"
+              name="muteSound"
+              id="muteSound"
             />
           </div>
         </SettingItem>

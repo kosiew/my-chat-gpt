@@ -1,6 +1,6 @@
 import { capitilize } from "@src/lib/util";
 import { ChatCompletionResponseMessageRoleEnum } from "openai";
-import { useCallback, ChangeEvent, useState, FormEvent } from "react";
+import { useCallback, ChangeEvent, FormEvent } from "react";
 import { IconButton } from "../IconButton";
 
 import { FiSend } from "react-icons/fi";

@@ -12,6 +12,7 @@ const initialState: SettingsState = {
   showPreamble: false,
   apiKey: API_KEY,
   model: "gpt-3.5-turbo",
+  muteSound: false,
 };
 
 // Reducer
@@ -34,6 +35,9 @@ export const settingSlice = createSlice({
     setShiftKey: (state, payload: PayloadAction<{ shiftSend: boolean }>) => {
       state.shiftSend = payload.payload.shiftSend;
     },
+    setMuteSound: (state, payload: PayloadAction<{ muteSound: boolean }>) => {
+      state.muteSound = payload.payload.muteSound;
+    },
     setShowPreamble: (state, payload: PayloadAction<{ show: boolean }>) => {
       state.showPreamble = payload.payload.show;
     },
@@ -49,6 +53,7 @@ export const {
   setShiftKey,
   setShowPreamble,
   setModel,
+  setMuteSound,
 } = settingSlice.actions;
 
 export const dialogueReducer = settingSlice.reducer;

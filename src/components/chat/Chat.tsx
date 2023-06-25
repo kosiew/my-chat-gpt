@@ -14,8 +14,7 @@ import {
 import { pushHistory, streamCompletion } from "@src/features/chat/thunks";
 import { Chat } from "@src/features/chat/types";
 import { Button } from "../Button";
-import { playTune, shortTune } from "@src/utils/audio";
-import { is } from "date-fns/locale";
+import { playTune as _playTune } from "@src/utils/audio";
 
 export type ChatViewProps = {
   chat: Chat;
@@ -23,6 +22,15 @@ export type ChatViewProps = {
 
 export function ChatView({ chat }: ChatViewProps) {
   const dispatch = useAppDispatch();
+  const muteSound = useAppSelector((state) => state.settings.muteSound);
+
+  const playTune = useCallback(
+    (tune: Note[]) => {
+      if (muteSound) return;
+      _playTune(tune);
+    },
+    [muteSound]
+  );
 
   const [sendAsRole, setSendAsRole] =
     useState<ChatCompletionResponseMessageRoleEnum>("user");
@@ -77,6 +85,7 @@ export function ChatView({ chat }: ChatViewProps) {
       dispatch(pushHistory({ content: draft, role: role }));
       dispatch(updateDraft({ id: chat.id, draft: "" }));
       playTune(onSubmitTune);
+      setWaitingForCompletion(true);
     },
     [chat, dispatch]
   );
