@@ -32,6 +32,8 @@ export function ChatView({ chat }: ChatViewProps) {
     [muteSound]
   );
 
+  const [waitingForCompletion, setWaitingForCompletion] = useState(false);
+
   const [sendAsRole, setSendAsRole] =
     useState<ChatCompletionResponseMessageRoleEnum>("user");
 
@@ -191,11 +193,13 @@ export function ChatView({ chat }: ChatViewProps) {
     });
   }, [chat.history, chat.id, dispatch, showPreamble]);
 
-  const completedResponse = !botTyping && !isHistoryEmpty && isLastMessageBot;
+  const completedResponse =
+    waitingForCompletion && !botTyping && !isHistoryEmpty && isLastMessageBot;
 
   useEffect(() => {
     if (completedResponse) {
       playTune(onCompletionTune);
+      setWaitingForCompletion(false);
     }
   }, [completedResponse]);
 
