@@ -43,6 +43,19 @@ export async function playTune(notes: Note[]) {
   }
 }
 
+// Create a simple tune
+export const onSubmitTune: Note[] = [
+  { frequency: 1000, duration: 0.1 },
+  { frequency: 1500, duration: 0.1 },
+  { frequency: 2000, duration: 0.1 },
+];
+
+export const onCompletionTune: Note[] = [
+  { frequency: 2000, duration: 0.1 },
+  { frequency: 1500, duration: 0.1 },
+  { frequency: 1000, duration: 0.1 },
+];
+
 function playTone(
   frequency: number,
   duration: number,
