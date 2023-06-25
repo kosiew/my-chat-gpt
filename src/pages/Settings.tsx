@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { useNavigate } from "react-router-dom";
 import { FiChevronLeft } from "react-icons/fi";
 import { IconButton } from "../components/IconButton";
-import { Note, onSubmitTune, playTune as _playTune } from "@src/utils/audio";
+import { onSubmitTune, playTune } from "@src/utils/audio";
 import { Button } from "@src/components/Button";
 import {
   setApiKey,
@@ -58,13 +58,6 @@ export function SettingItem({
 
 export function SettingsPage() {
   const dispatch = useAppDispatch();
-  const playTune = useCallback(
-    (tune: Note[]) => {
-      if (muteSound) return;
-      _playTune(tune);
-    },
-    [muteSound]
-  );
 
   const preamble = useAppSelector((state) => state.settings.preamble);
   const apiKey = useAppSelector((state) => state.settings.apiKey);
@@ -81,6 +74,7 @@ export function SettingsPage() {
     e.preventDefault();
     playTune(onSubmitTune);
 
+    const toastDuration = 2000;
     const formData = new FormData(e.currentTarget);
 
     const preambleForm = formData.get("preamble");
@@ -126,10 +120,13 @@ export function SettingsPage() {
     dispatch(
       createToast({
         message: "Settings saved!",
-        duration: 2000,
+        duration: toastDuration,
         type: "success",
       })
     );
+    setTimeout(() => {
+      navigate("/");
+    }, toastDuration);
   };
 
   return (
