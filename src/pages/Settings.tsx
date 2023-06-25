@@ -3,6 +3,7 @@ import classNames from "classnames";
 import { useNavigate } from "react-router-dom";
 import { FiChevronLeft } from "react-icons/fi";
 import { IconButton } from "../components/IconButton";
+import { Note, onSubmitTune, playTune as _playTune } from "@src/utils/audio";
 import { Button } from "@src/components/Button";
 import {
   setApiKey,
@@ -14,6 +15,7 @@ import {
 } from "@src/features/settings";
 import { createToast } from "@src/features/toasts/thunks";
 import { CHATGPT_MODELS, ChatGPTModel } from "@src/lib/constants/openai";
+import { useCallback } from "react";
 type SettingItemProps = {
   label?: string;
   labelFor?: string;
@@ -56,6 +58,13 @@ export function SettingItem({
 
 export function SettingsPage() {
   const dispatch = useAppDispatch();
+  const playTune = useCallback(
+    (tune: Note[]) => {
+      if (muteSound) return;
+      _playTune(tune);
+    },
+    [muteSound]
+  );
 
   const preamble = useAppSelector((state) => state.settings.preamble);
   const apiKey = useAppSelector((state) => state.settings.apiKey);
@@ -70,6 +79,8 @@ export function SettingsPage() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    playTune(onSubmitTune);
+
     const formData = new FormData(e.currentTarget);
 
     const preambleForm = formData.get("preamble");
@@ -197,18 +208,6 @@ export function SettingsPage() {
         </SettingItem>
         <SettingItem>
           <div className="flex flex-row items-center">
-            <label htmlFor="muteSound">Mute sound</label>
-            <input
-              defaultChecked={muteSound}
-              className="ml-2 rounded-md bg-mirage-700 transition-all checked:accent-green-700"
-              type="checkbox"
-              name="muteSound"
-              id="muteSound"
-            />
-          </div>
-        </SettingItem>
-        <SettingItem>
-          <div className="flex flex-row items-center">
             <label htmlFor="preamble-message">Show the preamble message:</label>
             <input
               defaultChecked={showPreambleMessage}
@@ -216,6 +215,18 @@ export function SettingsPage() {
               type="checkbox"
               name="preamble-message"
               id="preamble-message"
+            />
+          </div>
+        </SettingItem>
+        <SettingItem>
+          <div className="flex flex-row items-center">
+            <label htmlFor="muteSound">Mute sound</label>
+            <input
+              defaultChecked={muteSound}
+              className="ml-2 rounded-md bg-mirage-700 transition-all checked:accent-green-700"
+              type="checkbox"
+              name="muteSound"
+              id="muteSound"
             />
           </div>
         </SettingItem>
