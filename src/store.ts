@@ -6,6 +6,7 @@ import { Chat, chatSchema } from "./features/chat/types";
 import { toastSlice } from "./features/toasts";
 import { SettingsState } from "./features/settings/types";
 import { getStorage } from "./lib/storage";
+import { sideMenuSlice } from "./features/sideMenu";
 
 const LS_STATE_KEY = "state";
 
@@ -72,6 +73,9 @@ const getInitalState = async (): Promise<RootState | undefined> => {
         toasts: {},
       },
       settings: { ...localState.settings, apiKey: API_KEY },
+      sideMenu: {
+        isOpen: false,
+      },
     };
 
     return result;
@@ -89,6 +93,7 @@ export const STORE = configureStore({
     chats: chatsSlice.reducer,
     settings: settingSlice.reducer,
     toasts: toastSlice.reducer,
+    sideMenu: sideMenuSlice.reducer,
   },
   preloadedState: initalState,
   middleware: (getDefaultMiddleware) =>
