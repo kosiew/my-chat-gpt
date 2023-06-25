@@ -49,7 +49,8 @@ function playTone(
   oscillatorType: OscillatorType,
   gainNodeValues: number[]
 ) {
-  const AudioContext = window.AudioContext || window.webkitAudioContext;
+  const AudioContext =
+    window.AudioContext || (window as any).webkitAudioContext;
   const audioContext = new AudioContext();
 
   const oscillator = audioContext.createOscillator();
@@ -91,7 +92,8 @@ export function playSynthesizerTone(frequency: number, duration: number) {
 }
 
 export function playPianoTone(frequency: number, duration: number) {
-  const AudioContext = window.AudioContext || window.webkitAudioContext;
+  const AudioContext =
+    window.AudioContext || (window as any).webkitAudioContext;
   const audioContext = new AudioContext();
 
   const triangleOsc = audioContext.createOscillator();
