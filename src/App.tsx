@@ -11,8 +11,11 @@ function SideMenu() {
   const [isOpen, setIsOpen] = useState(false);
 
   const sideMenuRef = useRef(null);
-  const handleClickOutside = (event) => {
-    if (sideMenuRef.current && !sideMenuRef.current.contains(event.target)) {
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      sideMenuRef.current &&
+      !(sideMenuRef.current as HTMLDivElement).contains(event.target as Node)
+    ) {
       setIsOpen(false);
     }
   };
