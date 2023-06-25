@@ -19,6 +19,7 @@ const stateToLocalState = (state: RootState): LocalStorageState => {
       maxTokens: state.settings.maxTokens,
       preamble: state.settings.preamble,
       shiftSend: state.settings.shiftSend,
+      muteSound: state.settings.muteSound,
       showPreamble: state.settings.showPreamble,
       model: state.settings.model,
     },
