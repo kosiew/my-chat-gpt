@@ -1,4 +1,5 @@
 import { useAppDispatch, useAppSelector } from "@src/lib/hooks/redux";
+import { v4 as uuidV4 } from "uuid";
 
 import { ChatCompletionResponseMessageRoleEnum } from "openai";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -72,17 +73,87 @@ export function ChatView({ chat }: ChatViewProps) {
     },
     [chat, dispatch]
   );
-  const handleChatSubmit = useCallback<NonNullable<ChatInputProps["onSubmit"]>>(
-    ({ draft, role }) => {
-      if (!chat) return;
-      navigator.clipboard.writeText(draft);
-      dispatch(pushHistory({ content: draft, role: role }));
-      dispatch(updateDraft({ id: chat.id, draft: "" }));
-      playTune(onSubmitTune);
-      setWaitingForCompletion(true);
+  const [fileContent, setFileContent] = useState("");
+  const [uploadProgress, setUploadProgress] = useState(0);
+
+  // Function to read and slice the file content in chunks
+  const processFileContent = useCallback(
+    async (file) => {
+      const fileSize = file.size;
+      const chunkSize = 2048; // Chunks of 2kb
+      let offset = 0;
+
+      while (offset < fileSize) {
+        const chunk = file.slice(offset, offset + chunkSize);
+        const reader = new FileReader();
+
+        const readPromise = new Promise((resolve) => {
+          reader.onload = (event) => {
+            const textChunk = event.target.result;
+            setFileContent((prevFileContent) => prevFileContent + textChunk);
+            resolve();
+          };
+        });
+
+        // Read the chunk as text
+        reader.readAsText(chunk);
+
+        // Wait for reader to finish
+        await readPromise;
+
+        offset += chunkSize;
+      }
     },
-    [chat, dispatch]
+    [setFileContent]
   );
+
+  // Event handler to handle file input change
+  const onFileInputChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    await processFileContent(file);
+  };
+
+  // Modify handleChatSubmit function to handle file uploads
+  const handleChatSubmit = useCallback<NonNullable<ChatInputProps["onSubmit"]>>(
+    async ({ draft, role }) => {
+      if (!chat) return;
+      if (fileContent) {
+        const promptMessage = "Uploading file in chunks. Please wait...";
+
+        // Send the prompt first before uploading file chunks
+        const promptMessageId = uuidV4();
+        dispatch(
+          pushHistory({
+            content: promptMessage,
+            role: "user",
+            messageId: promptMessageId,
+          })
+        );
+
+        const chunks = fileContent.match(/[\s\S]{1,2048}/g) || [];
+        for (const chunk of chunks) {
+          const messageId = uuidV4();
+          dispatch(pushHistory({ content: chunk, role: role, messageId }));
+          setUploadProgress((prev) => prev + chunk.length);
+          await new Promise((resolve) => setTimeout(resolve, 300)); // Sending interval of 300ms
+        }
+
+        // Clear the file input, file content, and upload progress states
+        setFileContent("");
+        setUploadProgress(0);
+      } else {
+        navigator.clipboard.writeText(draft);
+        dispatch(pushHistory({ content: draft, role: role }));
+        dispatch(updateDraft({ id: chat.id, draft: "" }));
+        playTune(onSubmitTune);
+        setWaitingForCompletion(true);
+      }
+    },
+    [chat, dispatch, fileContent, playTune]
+  );
+
   const handleChatAbort = useCallback(() => {
     if (!chat) return;
 
@@ -228,6 +299,20 @@ export function ChatView({ chat }: ChatViewProps) {
         </div>
       </div>
       <div className="sticky bottom-0 mt-auto w-full bg-mirage-800 ">
+        <div className="flex">
+          <input
+            type="file"
+            className="bg-gray-200 p-1"
+            accept=".txt"
+            onChange={onFileInputChange}
+          />
+          {uploadProgress > 0 && (
+            <div className="ml-2">
+              Uploaded:{" "}
+              {Math.round((uploadProgress / fileContent.length) * 100)}%
+            </div>
+          )}
+        </div>
         <ChatInput
           draft={chat.draft}
           disabled={botTyping}
