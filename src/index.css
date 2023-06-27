@@ -5,7 +5,7 @@
 @import "tailwindcss/utilities";
 
 /* Custom */
-@import "./styles/grid.css";
+@import "./styles/animation.css" @import "./styles/grid.css";
 @import "./styles/markdown.css";
 
 html,
