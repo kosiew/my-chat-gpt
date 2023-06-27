@@ -135,10 +135,10 @@ export function ChatInput({
             className="ml-2 !bg-green-700 shadow-sm hover:!bg-green-600 active:!bg-green-800"
           >
             {disabled ? (
-              <div className="flex flex-row items-center">
-                <div className="anim delay-0 h-1 w-1 animate-blink rounded-full bg-green-500"></div>
-                <div className="ml-1 h-1 w-1 animate-blink rounded-full bg-green-500 delay-200"></div>
-                <div className="delay-400 ml-1 h-1 w-1 animate-blink rounded-full bg-green-500"></div>
+              <div className="flex flex-row items-center space-x-1">
+                <div className="h-1 w-1 animate-blink rounded-full bg-green-500"></div>
+                <div className="animation-delay[200ms] h-1 w-1 animate-blink rounded-full bg-green-500"></div>
+                <div className="animation-delay[400ms] h-1 w-1 animate-blink rounded-full bg-green-500"></div>
               </div>
             ) : (
               <FiSend size={20} />
