@@ -17,6 +17,21 @@ module.exports = {
           900: "#202124",
         },
       },
+      keyframes: {
+        blink: {
+          "0%": { opacity: 0.3 },
+          "50%": { opacity: 1 },
+          "100%": { opacity: 0.3 },
+        },
+      },
+      animation: {
+        blink: "blink 800ms ease-in-out infinite",
+      },
+    },
+  },
+  variants: {
+    extend: {
+      animation: ["responsive", "hover", "focus", "disabled"],
     },
   },
   plugins: [],
