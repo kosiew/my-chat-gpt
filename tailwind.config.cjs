@@ -26,6 +26,8 @@ module.exports = {
       },
       animation: {
         blink: "blink 800ms ease-in-out infinite",
+        "delay-200": "200ms",
+        "delay-400": "400ms",
       },
     },
   },
