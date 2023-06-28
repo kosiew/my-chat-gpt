@@ -73,9 +73,8 @@ export function ChatView({ chat }: ChatViewProps) {
     [chat, dispatch]
   );
   const handleChatSubmit = useCallback<NonNullable<ChatInputProps["onSubmit"]>>(
-    ({ draft, role }) => {
+    async ({ draft, role }) => {
       if (!chat) return;
-      navigator.clipboard.writeText(draft);
       dispatch(pushHistory({ content: draft, role: role }));
       dispatch(updateDraft({ id: chat.id, draft: "" }));
       playTune(onSubmitTune);

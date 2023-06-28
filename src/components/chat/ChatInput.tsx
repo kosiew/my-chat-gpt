@@ -136,9 +136,9 @@ export function ChatInput({
           >
             {disabled ? (
               <div className="flex flex-row items-center space-x-1">
-                <div className="delay[0ms] animate-blink-scale h-1 w-1 rounded-full bg-green-500"></div>
-                <div className="delay[200ms] animate-blink-scale h-1 w-1 rounded-full bg-green-500"></div>
-                <div className="delay[400ms] animate-blink-scale h-1 w-1 rounded-full bg-green-500"></div>
+                <div className="h-1 w-1 animate-blink rounded-full bg-green-500"></div>
+                <div className="animation-delay[200ms] h-1 w-1 animate-blink rounded-full bg-green-500"></div>
+                <div className="animation-delay[400ms] h-1 w-1 animate-blink rounded-full bg-green-500"></div>
               </div>
             ) : (
               <FiSend size={20} />

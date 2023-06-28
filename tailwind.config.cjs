@@ -23,31 +23,17 @@ module.exports = {
           "50%": { opacity: 1 },
           "100%": { opacity: 0.3 },
         },
-        "blink-scale": {
-          "0%": { opacity: "0.3", transform: "scale(1)" },
-          "50%": { opacity: "1", transform: "scale(1.2)" },
-          "100%": { opacity: "0.3", transform: "scale(1)" },
-        },
       },
       animation: {
         blink: "blink 800ms ease-in-out infinite",
-      },
-      transitionDelay: {
-        200: "200ms",
-        400: "400ms",
+        "delay-200": "200ms",
+        "delay-400": "400ms",
       },
     },
   },
   variants: {
     extend: {
-      animation: [
-        "responsive",
-        "motion-safe",
-        "motion-reduce",
-        "hover",
-        "focus",
-        "disabled",
-      ],
+      animation: ["responsive", "hover", "focus", "disabled"],
     },
   },
   plugins: [],
