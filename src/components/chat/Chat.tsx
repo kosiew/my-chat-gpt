@@ -255,18 +255,18 @@ export function ChatView({ chat }: ChatViewProps) {
           )}
         </div>
       </div>
-      <div className="flex justify-center">
+      <div className="flex w-full flex-col items-center justify-center">
         <FileUploader handleFileSubmission={handleFileSubmission} />
         <ProgressBar progress={progress} />
-      </div>
-      <div className="sticky bottom-0 mt-auto w-full bg-mirage-800 ">
-        <ChatInput
-          draft={chat.draft}
-          disabled={botTyping}
-          sendAsRole={sendAsRole}
-          onChange={handleChatInput}
-          onSubmit={handleChatSubmit}
-        />
+        <div className="sticky bottom-0 mt-auto w-full bg-mirage-800 ">
+          <ChatInput
+            draft={chat.draft}
+            disabled={botTyping}
+            sendAsRole={sendAsRole}
+            onChange={handleChatInput}
+            onSubmit={handleChatSubmit}
+          />
+        </div>
       </div>
     </div>
   );

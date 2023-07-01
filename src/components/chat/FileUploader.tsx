@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import { createToast } from "@src/features/toasts/thunks";
+import { useAppDispatch } from "@src/lib/hooks/redux";
+import React, { useRef } from "react";
 
 interface Props {
   handleFileSubmission: (
@@ -6,35 +8,57 @@ interface Props {
     filename: string,
     parts: number
   ) => void;
+  acceptedExtensions?: string[];
 }
 
-export const FileUploader: React.FC<Props> = ({ handleFileSubmission }) => {
-  // Define the type for selectedFile
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
-  const changeHandler = (event: any) => {
-    setSelectedFile(event.target.files[0]);
+export const FileUploader: React.FC<Props> = ({
+  handleFileSubmission,
+  acceptedExtensions = [".txt", ".csv"],
+}) => {
+  const inputFileRef = useRef<HTMLInputElement>(null);
+  const dispatch = useAppDispatch();
+  const toastDuration = 2000;
+  // Concatenate acceptedExtensions
+  const accept = acceptedExtensions.join(",");
+  const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files[0];
+    if (file) {
+      const fileExtension = file.name.split(".").pop();
+      if (acceptedExtensions.includes("." + fileExtension)) {
+        const reader = new FileReader();
+        reader.readAsText(file);
+        reader.onload = async () => {
+          const content = reader.result as string;
+          const filename = file.name;
+          const parts = content.match(/[\s\S]{1,15000}/g) || [];
+          handleFileSubmission(content, filename, parts.length);
+        };
+      } else {
+        dispatch(
+          createToast({
+            message: "Invalid file extension!",
+            duration: toastDuration,
+            type: "error",
+          })
+        );
+      }
+    }
   };
-
   const handleSubmission = () => {
-    if (!selectedFile) return;
-
-    const reader: any = new FileReader();
-    reader.readAsText(selectedFile);
-    reader.onload = async () => {
-      const content = reader.result;
-      // You now have TypeScript's type safety when calling properties on selectedFile
-      const filename = selectedFile.name;
-      const parts = content.match(/[\s\S]{1,15000}/g) || [];
-      handleFileSubmission(content, filename, parts.length);
-    };
+    // Trigger the click event on the hidden file input element
+    inputFileRef?.current?.click();
   };
-
   return (
     <div>
-      <input type="file" name="file" onChange={changeHandler} />
+      <input
+        type="file"
+        accept={accept}
+        ref={inputFileRef}
+        style={{ display: "none" }}
+        onChange={changeHandler}
+      />
       <button
-        className="ml-2 rounded bg-green-500 p-2 text-white"
+        className="ml-2 w-32 rounded bg-green-500 p-2 text-sm text-white"
         onClick={handleSubmission}
       >
         Upload File
