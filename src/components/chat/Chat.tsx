@@ -121,7 +121,7 @@ export function ChatView({ chat }: ChatViewProps) {
       );
     }
     sendChatMessage(
-      "I have uploaded all chunks of the file. Are you ready for further instructions?",
+      "I have uploaded all chunks of the file. First question is how many chunks have you received?",
       fileUploadMessageRole
     );
   };
