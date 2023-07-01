@@ -18,7 +18,6 @@ export const FileUploader: React.FC<Props> = ({
   const inputFileRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
   const toastDuration = 2000;
-  // Concatenate acceptedExtensions
   const accept = acceptedExtensions.join(",");
   const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -49,7 +48,8 @@ export const FileUploader: React.FC<Props> = ({
       }
     }
   };
-  const handleSubmission = () => {
+  const handleSubmission = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
     // Trigger the click event on the hidden file input element
     inputFileRef?.current?.click();
   };
