@@ -95,10 +95,11 @@ export const streamCompletion = createAsyncThunk<
         return;
       }
     }
-
+    const message = `Something went wrong while fetching the completion. Error: ${e.message} Response: ${e.response.status}`;
+    console.log(message);
     thunkAPI.dispatch(
       createToast({
-        message: "Something went wrong while fetching the completion",
+        message,
         type: "error",
         duration: 3000,
       })
