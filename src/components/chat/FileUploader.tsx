@@ -21,7 +21,12 @@ export const FileUploader: React.FC<Props> = ({
   // Concatenate acceptedExtensions
   const accept = acceptedExtensions.join(",");
   const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files[0];
+    const file = event.target.files?.[0];
+    console.log(
+      "%c==> [changeHandler]",
+      "background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;",
+      { file }
+    );
     if (file) {
       const fileExtension = file.name.split(".").pop();
       if (acceptedExtensions.includes("." + fileExtension)) {

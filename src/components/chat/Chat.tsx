@@ -82,6 +82,10 @@ export function ChatView({ chat }: ChatViewProps) {
     filename: string,
     partCount: number
   ) => {
+    console.log(
+      "%c==> [handleFileSubmission]",
+      "background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;"
+    );
     const parts = content.match(/[\s\S]{1,15000}/g) || [];
 
     // Send a preamble message before sending file contents
@@ -96,8 +100,12 @@ export function ChatView({ chat }: ChatViewProps) {
     for (let i = 0; i < parts.length; i++) {
       const part = i + 1;
       const message = `Part ${part} of ${filename}: \n\n ${parts[i]}`;
-      await dispatch(pushHistory({ content: message, role: "system" }));
+      dispatch(pushHistory({ content: message, role: "system" }));
       setProgress((part / partCount) * 100);
+      console.log(
+        `%c==> [sent part: ${part}/${parts.length} ]`,
+        "background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;"
+      );
     }
   };
 
