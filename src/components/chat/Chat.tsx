@@ -1,6 +1,9 @@
 import { useAppDispatch, useAppSelector } from "@src/lib/hooks/redux";
 
-import { ChatCompletionResponseMessageRoleEnum } from "openai";
+import {
+  ChatCompletionRequestMessageRoleEnum,
+  ChatCompletionResponseMessageRoleEnum,
+} from "openai";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ChatInput, ChatInputProps } from "./ChatInput";
 import { ChatMessage } from "./ChatMessage";
@@ -40,6 +43,17 @@ export function ChatView({ chat }: ChatViewProps) {
     },
     [muteSound]
   );
+
+  const sendChatMessage = (
+    message: string,
+    role: ChatCompletionRequestMessageRoleEnum
+  ) => {
+    console.log(
+      `%c==> [sendChatMessage ${message}]`,
+      "background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;"
+    );
+    dispatch(pushHistory({ content: message, role }));
+  };
 
   const [waitingForCompletion, setWaitingForCompletion] = useState(false);
 
@@ -86,27 +100,30 @@ export function ChatView({ chat }: ChatViewProps) {
       "%c==> [handleFileSubmission]",
       "background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;"
     );
+
     const parts = content.match(/[\s\S]{1,15000}/g) || [];
 
+    const fileUploadMessageRole = "user";
     // Send a preamble message before sending file contents
-    dispatch(
-      pushHistory({
-        content:
-          "I will submit the contents of a file in chunks. Please ask for further instructions after I submit all the chunks",
-        role: "system",
-      })
+    sendChatMessage(
+      "I will submit the contents of a file in chunks. Please ask for further instructions after I submit all the chunks",
+      fileUploadMessageRole
     );
 
     for (let i = 0; i < parts.length; i++) {
       const part = i + 1;
       const message = `Part ${part} of ${filename}: \n\n ${parts[i]}`;
-      dispatch(pushHistory({ content: message, role: "system" }));
+      sendChatMessage(message, fileUploadMessageRole);
       setProgress((part / partCount) * 100);
       console.log(
         `%c==> [sent part: ${part}/${parts.length} ]`,
         "background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;"
       );
     }
+    sendChatMessage(
+      "I have uploaded all chunks of the file. Are you ready for further instructions?",
+      fileUploadMessageRole
+    );
   };
 
   const handleChatSubmit = useCallback<NonNullable<ChatInputProps["onSubmit"]>>(
