@@ -20,12 +20,16 @@ import {
   onSubmitTune,
   playTune as _playTune,
 } from "@src/utils/audio";
+import { ProgressBar } from "@src/components/chat/ProgressBar";
+import { FileUploader } from "@src/components/chat/FileUploader";
 
 export type ChatViewProps = {
   chat: Chat;
 };
 
 export function ChatView({ chat }: ChatViewProps) {
+  const [progress, setProgress] = useState(0);
+
   const dispatch = useAppDispatch();
   const muteSound = useAppSelector((state) => state.settings.muteSound);
 
@@ -72,6 +76,31 @@ export function ChatView({ chat }: ChatViewProps) {
     },
     [chat, dispatch]
   );
+
+  const handleFileSubmission = async (
+    content: string,
+    filename: string,
+    partCount: number
+  ) => {
+    const parts = content.match(/[\s\S]{1,15000}/g) || [];
+
+    // Send a preamble message before sending file contents
+    dispatch(
+      pushHistory({
+        content:
+          "I will submit the contents of a file in chunks. Please ask for further instructions after I submit all the chunks",
+        role: "system",
+      })
+    );
+
+    for (let i = 0; i < parts.length; i++) {
+      const part = i + 1;
+      const message = `Part ${part} of ${filename}: \n\n ${parts[i]}`;
+      await dispatch(pushHistory({ content: message, role: "system" }));
+      setProgress((part / partCount) * 100);
+    }
+  };
+
   const handleChatSubmit = useCallback<NonNullable<ChatInputProps["onSubmit"]>>(
     async ({ draft, role }) => {
       if (!chat) return;
@@ -225,6 +254,10 @@ export function ChatView({ chat }: ChatViewProps) {
             </div>
           )}
         </div>
+      </div>
+      <div className="flex justify-center">
+        <FileUploader handleFileSubmission={handleFileSubmission} />
+        <ProgressBar progress={progress} />
       </div>
       <div className="sticky bottom-0 mt-auto w-full bg-mirage-800 ">
         <ChatInput
