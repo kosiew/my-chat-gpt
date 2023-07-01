@@ -71,31 +71,47 @@ export const streamCompletion = createAsyncThunk<
         })
       );
     }
-  } catch (e) {
+  } catch (e: unknown) {
     if (e instanceof ChatCompletionError) {
-      if (e.response.status === 401 || e.response.status === 403) {
-        thunkAPI.dispatch(
-          createToast({
-            message: "Your API key is invalid. Please check your settings",
-            type: "error",
-            duration: 3000,
-          })
-        );
-        return;
-      }
-      if (e.response.status === 404) {
-        thunkAPI.dispatch(
-          createToast({
-            message:
-              "The model you selected does not exist. Please check your settings",
-            type: "error",
-            duration: 3000,
-          })
-        );
-        return;
+      switch (e.response.status) {
+        case 401:
+        case 403:
+          thunkAPI.dispatch(
+            createToast({
+              message: "Your API key is invalid. Please check your settings",
+              type: "error",
+              duration: 3000,
+            })
+          );
+          break;
+
+        case 404:
+          thunkAPI.dispatch(
+            createToast({
+              message:
+                "The model you selected does not exist. Please check your settings",
+              type: "error",
+              duration: 3000,
+            })
+          );
+          break;
+
+        default:
+          {
+            const message = `An error occurred. Please try again later. Status: ${e.response.status} - ${e.response.statusText}`;
+            console.error(message);
+            thunkAPI.dispatch(
+              createToast({
+                message: message,
+                type: "error",
+                duration: 3000,
+              })
+            );
+          }
+          return;
       }
     }
-    const message = `Something went wrong while fetching the completion. Error: ${e.message} Response: ${e.response.status}`;
+    const message = `Something went wrong while fetching the completion. Error: ${e} `;
     console.log(message);
     thunkAPI.dispatch(
       createToast({
